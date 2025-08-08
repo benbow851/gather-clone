@@ -1,0 +1,14 @@
+{
+  "name": "gather-clone",
+  "version": "1.0.0",
+  "description": "A Gather.town clone with multiplayer video chat",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm start",
+    "install-all": "cd frontend && npm install && cd ../backend && npm install"
+  },
+  "keywords": ["gather", "video-chat", "multiplayer", "virtual-spaces"],
+  "author": "Your Name",
+  "license": "MIT"
+}
