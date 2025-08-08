@@ -3,16 +3,5 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/.next",
   "installCommand": "cd frontend && npm install",
-  "framework": "nextjs",
-  "functions": {
-    "backend/src/index.ts": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/backend/src/index.ts"
-    }
-  ]
+  "framework": "nextjs"
 }
