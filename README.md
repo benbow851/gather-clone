@@ -54,3 +54,7 @@ APP_CERTIFICATE=
 ```
 
 Lastly, run `npm run dev` in both the `frontend` and `backend` directories.
+
+## Deployment
+
+This project is configured for deployment on Vercel, Railway, and other platforms. See `DEPLOYMENT.md` for detailed instructions.
