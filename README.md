@@ -58,3 +58,7 @@ Lastly, run `npm run dev` in both the `frontend` and `backend` directories.
 ## Deployment
 
 This project is configured for deployment on Vercel, Railway, and other platforms. See `DEPLOYMENT.md` for detailed instructions.
+
+### Live Demo
+
+The application will be available at your deployed URL once configured with proper environment variables.
