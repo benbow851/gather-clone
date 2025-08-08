@@ -14,16 +14,5 @@
       "source": "/api/(.*)",
       "destination": "/backend/src/index.ts"
     }
-  ],
-  "env": {
-    "FRONTEND_URL": "@frontend-url",
-    "SUPABASE_URL": "@supabase-url",
-    "SERVICE_ROLE": "@service-role",
-    "NEXT_PUBLIC_SUPABASE_URL": "@supabase-url",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@supabase-anon-key",
-    "NEXT_PUBLIC_BASE_URL": "@base-url",
-    "NEXT_PUBLIC_BACKEND_URL": "@backend-url",
-    "NEXT_PUBLIC_AGORA_APP_ID": "@agora-app-id",
-    "APP_CERTIFICATE": "@agora-certificate"
-  }
+  ]
 }
