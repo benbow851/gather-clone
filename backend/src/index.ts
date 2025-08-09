@@ -15,6 +15,7 @@ const server = http.createServer(app)
 app.use(cors({
     origin: process.env.FRONTEND_URL
 }))
+app.use(express.json())
 
 // Initialize Socket.IO server
 const io = new SocketIOServer(server, {
@@ -58,6 +59,5 @@ const PORT = process.env.PORT || 3001
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`)
 })
-
 
 export { io }

@@ -14,23 +14,48 @@ function protectConnection(io: Server) {
     io.use(async (socket, next) => {
         const access_token = socket.handshake.headers['authorization']?.split(' ')[1]
         const uid = socket.handshake.query.uid as string
-        if (!access_token || !uid) {
-            const error = new Error("Invalid access token or uid.")
+        const username = (socket.handshake.query.username as string) || 'Guest'
+        const allowGuests = process.env.ALLOW_GUESTS === 'true'
+
+        if (!access_token) {
+            if (allowGuests && uid) {
+                // create a synthetic user object compatible with downstream code
+                users.addUser(uid, {
+                    id: uid,
+                    aud: 'guest',
+                    role: 'guest',
+                    email: `${username}@guest.local`,
+                    email_confirmed_at: null,
+                    phone: '',
+                    confirmation_sent_at: null,
+                    app_metadata: { provider: 'guest' },
+                    user_metadata: { email: `${username}@guest.local`, name: username },
+                    identities: [],
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                    factors: [],
+                    is_anonymous: true
+                } as any)
+                return next()
+            }
+            const error = new Error('Invalid access token or uid.')
             return next(error)
-        } else {
-            const { data: user, error: error } = await supabase.auth.getUser(access_token)
-            if (error) {
-                return next(new Error("Invalid access token."))
-            }
-            if (!user || user.user.id !== uid) {
-                return next(new Error("Invalid uid."))
-            }
-            users.addUser(uid, user.user)
-            next()
         }
+        if (!uid) {
+            const error = new Error('Invalid access token or uid.')
+            return next(error)
+        }
+        const { data: user, error } = await supabase.auth.getUser(access_token)
+        if (error) {
+            return next(new Error('Invalid access token.'))
+        }
+        if (!user || user.user.id !== uid) {
+            return next(new Error('Invalid uid.'))
+        }
+        users.addUser(uid, user.user)
+        next()
     })
 }
-
 
 export function sockets(io: Server) {
     protectConnection(io)
@@ -102,9 +127,17 @@ export function sockets(io: Server) {
             if (error || !data) {
                 return rejectJoin('Space not found.')
             }
-            const { data: profile, error: profileError } = await supabase.from('profiles').select('skin').eq('id', uid).single()
-            if (profileError) {
-                return rejectJoin('Failed to get profile.')
+
+            // Resolve skin and username
+            let skin = '009'
+            let username = (socket.handshake.query.username as string) || 'Guest'
+            const access_token = socket.handshake.headers['authorization']?.split(' ')[1]
+            if (access_token) {
+                const userId = uid
+                const { data: profile } = await supabase.from('profiles').select('skin').eq('id', userId).single()
+                if (profile && profile.skin) skin = profile.skin
+                const user = users.getUser(userId)!
+                username = formatEmailToName(user.user_metadata.email)
             }
 
             const realm = data
@@ -119,9 +152,7 @@ export function sockets(io: Server) {
                     kickPlayer(uid, 'You have logged in from another location.')
                 }
 
-                const user = users.getUser(uid)!
-                const username = formatEmailToName(user.user_metadata.email)
-                sessionManager.addPlayerToSession(socket.id, realmData.realmId, uid, username, profile.skin)
+                sessionManager.addPlayerToSession(socket.id, realmData.realmId, uid, username, skin)
                 const newSession = sessionManager.getPlayerSession(uid)
                 const player = newSession.getPlayer(uid)   
 
