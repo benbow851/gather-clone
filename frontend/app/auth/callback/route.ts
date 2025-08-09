@@ -6,7 +6,6 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get("code")
 
-  // Always prepare the redirect response first so we can set cookies on it
   const response = NextResponse.redirect(`${requestUrl.origin}/app`)
 
   if (code) {
@@ -21,6 +20,7 @@ export async function GET(request: Request) {
             return cookieStore.get(name)?.value
           },
           set(name: string, value: string, options: CookieOptions) {
+            // Let Next/Supabase decide attributes; don’t force domain so it works on preview/prod
             response.cookies.set({ name, value, ...options })
           },
           remove(name: string, options: CookieOptions) {
