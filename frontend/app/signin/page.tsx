@@ -2,6 +2,8 @@
 import { createClient } from '@/utils/supabase/client'
 import GoogleSignInButton from './GoogleSignInButton'
 
+export const dynamic = 'force-dynamic'
+
 export default function Login() {
 
     const signInWithGoogle = async () => {

@@ -4,6 +4,9 @@ import { Navbar } from '@/components/Navbar/Navbar'
 import RealmsMenu from './RealmsMenu/RealmsMenu'
 import { getVisitedRealms } from '@/utils/supabase/getVisitedRealms'
 
+// Ensure this page is rendered per-request (not statically at build time)
+export const dynamic = 'force-dynamic'
+
 export default async function App() {
 
     const supabase = createClient()

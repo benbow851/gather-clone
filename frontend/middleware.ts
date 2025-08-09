@@ -2,6 +2,10 @@ import { type NextRequest } from "next/server"
 import { updateSession } from "@/utils/supabase/middleware"
 
 export async function middleware(request: NextRequest) {
+  // Skip middleware on the auth callback route to avoid interfering with cookie exchange
+  if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+    return
+  }
   return await updateSession(request);
 }
 
