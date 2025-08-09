@@ -1,6 +1,7 @@
 import { Nunito_Sans, DM_Sans } from 'next/font/google'
 import "./globals.css";
 import Layout from '@/components/Layout/Layout'
+import SupabaseProvider from './supabase-provider'
 
 const nunito = Nunito_Sans({
     subsets: ['latin'],
@@ -31,7 +32,9 @@ export default function RootLayout({
     <html lang="en" className={dmSans.className}>
       <body>
         <Layout>
+          <SupabaseProvider>
             {children}
+          </SupabaseProvider>
         </Layout>
       </body>
     </html>

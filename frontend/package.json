@@ -6,11 +6,13 @@
     "start": "next start"
   },
   "dependencies": {
+    "@supabase/auth-helpers-nextjs": "^0.8.7",
+    "@supabase/auth-helpers-react": "^0.4.2",
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.1.4",
     "@phosphor-icons/react": "^2.1.5",
     "@supabase/ssr": "latest",
-    "@supabase/supabase-js": "latest",
+    "@supabase/supabase-js": "^2.38.0",
     "agora-rtc-react": "^2.3.0",
     "agora-rtc-sdk-ng": "^4.22.1",
     "agora-token": "^2.0.3",

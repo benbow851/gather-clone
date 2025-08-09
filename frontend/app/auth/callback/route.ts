@@ -1,37 +1,40 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr"
-import { cookies } from "next/headers"
-import { NextResponse } from "next/server"
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get("code")
+  const code = requestUrl.searchParams.get('code')
+  const next = requestUrl.searchParams.get('next') ?? '/game'
 
-  const response = NextResponse.redirect(`${requestUrl.origin}/app`)
+  console.log('OAuth callback received:', { code: !!code, next })
 
   if (code) {
     const cookieStore = cookies()
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
 
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value
-          },
-          set(name: string, value: string, options: CookieOptions) {
-            // Let Next/Supabase decide attributes; don’t force domain so it works on preview/prod
-            response.cookies.set({ name, value, ...options })
-          },
-          remove(name: string, options: CookieOptions) {
-            response.cookies.set({ name, value: "", ...options })
-          },
-        },
-      },
-    )
+    try {
+      const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
-    await supabase.auth.exchangeCodeForSession(code)
+      if (error) {
+        console.error('Auth callback error:', error)
+        return NextResponse.redirect(
+          `${requestUrl.origin}/signin?error=auth_callback_error&message=${encodeURIComponent(
+            error.message,
+          )}`,
+        )
+      }
+
+      console.log('OAuth success, redirecting to:', next)
+      return NextResponse.redirect(`${requestUrl.origin}${next}`)
+    } catch (error) {
+      console.error('Auth callback exception:', error)
+      return NextResponse.redirect(
+        `${requestUrl.origin}/signin?error=server_error`,
+      )
+    }
   }
 
-  return response
+  console.log('No code parameter found')
+  return NextResponse.redirect(`${requestUrl.origin}/signin?error=no_code`)
 }
