@@ -62,6 +62,61 @@ export function sockets(io: Server) {
 
     // Handle a connection
     io.on('connection', (socket) => {
+        console.log('🔌 Socket connected:', socket.id)
+
+        // Space-related socket events (for the new spaces system)
+        socket.on('join-space', (data) => {
+            console.log('🚀 User joining space:', data)
+            const { spaceId, user } = data
+            if (!spaceId || !user) {
+                console.log('❌ Invalid join-space data:', data)
+                return
+            }
+            socket.join(spaceId)
+            socket.to(spaceId).emit('user-joined-space', user)
+            socket.emit('users-update', [user]) // For now, just the current user
+            console.log('✅ User joined space:', spaceId, user.name)
+        })
+
+        socket.on('move-user', (data) => {
+            console.log('🔄 User moving:', data)
+            const { spaceId, userId, x, y } = data
+            if (!spaceId || !userId) {
+                console.log('❌ Invalid move-user data:', data)
+                return
+            }
+            const movedUser = { id: userId, x, y }
+            socket.to(spaceId).emit('user-moved', movedUser)
+            console.log('✅ User moved in space:', spaceId, userId, x, y)
+        })
+
+        socket.on('send-message', (data) => {
+            console.log('💬 User sending message:', data)
+            const { spaceId, userId, userName, message, timestamp } = data
+            if (!spaceId || !message || !userName) {
+                console.log('❌ Invalid send-message data:', data)
+                return
+            }
+            const messageData = { userId, userName, message, timestamp }
+            io.to(spaceId).emit('message', messageData)
+            console.log('✅ Message sent in space:', spaceId, message)
+        })
+
+        socket.on('leave-space', (data) => {
+            console.log('👋 User leaving space:', data)
+            const { spaceId, user } = data
+            if (!spaceId || !user) {
+                console.log('❌ Invalid leave-space data:', data)
+                return
+            }
+            socket.leave(spaceId)
+            socket.to(spaceId).emit('user-left-space', user)
+            console.log('✅ User left space:', spaceId, user.name)
+        })
+
+        socket.on('disconnect', () => {
+            console.log('🔌 Socket disconnected:', socket.id)
+        })
 
         function on(eventName: string, schema: z.ZodTypeAny, callback: OnEventCallback) {
             socket.on(eventName, (data: any) => {

@@ -22,11 +22,25 @@ app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Gather Clone Backend is running' })
 })
 
+// WebSocket test endpoint
+app.get('/ws-test', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'WebSocket test endpoint',
+    socketIO: 'enabled',
+    cors: process.env.FRONTEND_URL || '*'
+  })
+})
+
 // Initialize Socket.IO server
 const io = new SocketIOServer(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || '*'
-  }
+    origin: process.env.FRONTEND_URL || '*',
+    methods: ['GET', 'POST'],
+    credentials: true
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 })
 
 // Mount routes under /api prefix
