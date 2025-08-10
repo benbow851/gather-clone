@@ -17,6 +17,11 @@ app.use(cors({
 }))
 app.use(express.json())
 
+// Health check route for Railway
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Gather Clone Backend is running' })
+})
+
 // Initialize Socket.IO server
 const io = new SocketIOServer(server, {
   cors: {
