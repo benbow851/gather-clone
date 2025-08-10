@@ -13,3 +13,7 @@ cmd = "npm start"
 [variables]
 NIXPACKS_NODE_VERSION = "18"
 NIXPACKS_START_CMD = "npm start"
+NIXPACKS_BUILD_CMD = "npm install && npm run build"
+RAILWAY_START_COMMAND = "npm start"
+START_COMMAND = "npm start"
+BUILD_COMMAND = "npm install && npm run build"
