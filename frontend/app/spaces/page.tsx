@@ -54,7 +54,10 @@ export default function SpacesPage() {
     setLoading(true)
     try {
       // Fetch from your backend API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/spaces`)
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+      const fullBackendUrl = backendUrl?.startsWith('http') ? backendUrl : `https://${backendUrl}`
+      
+      const response = await fetch(`${fullBackendUrl}/api/spaces`)
       if (response.ok) {
         const spacesData = await response.json()
         setSpaces(spacesData)
@@ -83,6 +86,10 @@ export default function SpacesPage() {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
       console.log('🌐 Backend URL:', backendUrl)
       
+      // Ensure the backend URL has the correct protocol
+      const fullBackendUrl = backendUrl?.startsWith('http') ? backendUrl : `https://${backendUrl}`
+      console.log('🔗 Full Backend URL:', fullBackendUrl)
+      
       const requestBody = {
         name: newSpace.name,
         description: newSpace.description,
@@ -91,7 +98,7 @@ export default function SpacesPage() {
       }
       console.log('📤 Request body:', requestBody)
       
-      const response = await fetch(`${backendUrl}/api/spaces`, {
+      const response = await fetch(`${fullBackendUrl}/api/spaces`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
