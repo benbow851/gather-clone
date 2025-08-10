@@ -1,8 +1,8 @@
 import { RtcRole, RtcTokenBuilder } from 'agora-token'
 
 export async function generateGuestAgoraToken(channelName: string) {
-  const appId = process.env.NEXT_PUBLIC_AGORA_APP_ID!
-  const appCertificate = process.env.APP_CERTIFICATE!
+  const appId = process.env.AGORA_APP_ID!
+  const appCertificate = process.env.AGORA_APP_CERTIFICATE!
   const uid = 0
   const role = RtcRole.PUBLISHER
   const expireTime = 3600
@@ -15,8 +15,7 @@ export async function generateGuestAgoraToken(channelName: string) {
     channelName,
     uid,
     role,
-    expiredTs,
-    expiredTs,
+    expiredTs
   )
 
   return token
