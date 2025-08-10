@@ -253,5 +253,57 @@ export function sockets(io: Server) {
             const uid = socket.handshake.query.uid as string
             emit('receiveMessage', { uid, message })
         })
+
+        // Space-related socket events
+        socket.on('join-space', (data) => {
+            const { spaceId, user } = data
+            if (!spaceId || !user) return
+
+            // Join the space room
+            socket.join(spaceId)
+            
+            // Store user in the space (you can use a Map or database)
+            // For now, we'll emit to all users in the space
+            socket.to(spaceId).emit('user-joined-space', user)
+            
+            // Get current users in the space and emit update
+            // This is a simplified version - you might want to track users per space
+            socket.emit('users-update', [user])
+        })
+
+        socket.on('move-user', (data) => {
+            const { spaceId, userId, x, y } = data
+            if (!spaceId || !userId) return
+
+            // Update user position and emit to all users in the space
+            const movedUser = { id: userId, x, y }
+            socket.to(spaceId).emit('user-moved', movedUser)
+        })
+
+        socket.on('send-message', (data) => {
+            const { spaceId, userId, userName, message, timestamp } = data
+            if (!spaceId || !message || !userName) return
+
+            // Broadcast message to all users in the space
+            const messageData = {
+                userId,
+                userName,
+                message,
+                timestamp
+            }
+            
+            io.to(spaceId).emit('message', messageData)
+        })
+
+        socket.on('leave-space', (data) => {
+            const { spaceId, user } = data
+            if (!spaceId || !user) return
+
+            // Leave the space room
+            socket.leave(spaceId)
+            
+            // Notify other users in the space
+            socket.to(spaceId).emit('user-left-space', user)
+        })
     })
 }
