@@ -1,0 +1,24 @@
+# Frontend build artifacts (not needed for backend deployment)
+frontend/.next/
+frontend/out/
+frontend/dist/
+
+# Development files
+.git/
+.github/
+.vscode/
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Documentation
+README.md
+DEPLOYMENT.md
+setup-github.md
+database-setup*.sql
+
+# Package manager files (Railway will handle these)
+frontend/package-lock.json
+frontend/yarn.lock

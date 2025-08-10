@@ -9,7 +9,8 @@
     "start:backend": "cd backend && npm start",
     "start:frontend": "cd frontend && npm start",
     "install-all": "cd frontend && npm install && cd ../backend && npm install",
-    "build:backend": "cd backend && npm run build"
+    "build:backend": "cd backend && npm run build",
+    "postinstall": "npm run install-all"
   },
   "keywords": ["gather", "video-chat", "multiplayer", "virtual-spaces"],
   "author": "Your Name",
