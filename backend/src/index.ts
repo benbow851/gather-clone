@@ -18,6 +18,11 @@ app.use(cors({
 app.use(express.json())
 
 // Health check route for Railway
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'Gather Clone Backend is running' })
+})
+
+// Root route
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Gather Clone Backend is running' })
 })

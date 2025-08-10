@@ -1,108 +1,206 @@
 # 🚀 Deployment Guide for Gather Clone
 
-This guide will help you deploy your Gather clone to a public server.
+This guide will help you deploy your Gather Clone application to Railway (backend) and Vercel (frontend).
 
 ## 📋 Prerequisites
 
-- ✅ Supabase project configured
-- ✅ Agora project configured  
-- ✅ All environment variables ready
-- ✅ GitHub repository (recommended)
+- GitHub account with your repository
+- Railway account (free tier available)
+- Vercel account (free tier available)
+- Supabase project (for database and auth)
 
-## 🎯 Option 1: Vercel Deployment (Recommended)
+## 🔧 Step 1: Prepare Your Repository
 
-### Step 1: Prepare Your Repository
-1. Push your code to GitHub
-2. Ensure all environment variables are documented
+### 1.1 Commit and Push Your Changes
 
-### Step 2: Deploy to Vercel
-1. Go to [vercel.com](https://vercel.com)
-2. Sign up/Login with GitHub
+```bash
+# Add all changes
+git add .
+
+# Commit the changes
+git commit -m "Add Railway and Vercel deployment configuration"
+
+# Push to GitHub
+git push origin main
+```
+
+### 1.2 Verify Your Repository Structure
+
+Your repository should have:
+```
+gather-clone/
+├── backend/          # Node.js backend
+├── frontend/         # Next.js frontend
+├── railway.json      # Railway configuration
+├── vercel.json       # Vercel configuration
+└── env.example       # Environment variables template
+```
+
+## 🚂 Step 2: Deploy Backend to Railway
+
+### 2.1 Connect Railway to GitHub
+
+1. Go to [Railway.app](https://railway.app)
+2. Sign in with GitHub
 3. Click "New Project"
-4. Import your GitHub repository
-5. Configure environment variables in Vercel dashboard
+4. Select "Deploy from GitHub repo"
+5. Choose your `gather-clone` repository
+6. Select the `main` branch
 
-### Step 3: Set Environment Variables in Vercel
-Go to your project settings → Environment Variables and add:
+### 2.2 Configure Environment Variables
 
+In your Railway project dashboard, add these environment variables:
+
+```bash
+NODE_ENV=production
+PORT=3001
+FRONTEND_URL=https://your-frontend-domain.vercel.app
+
+# Supabase Configuration
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+SERVICE_ROLE=your_supabase_service_role
+
+# Agora Video Chat (Optional)
+AGORA_APP_ID=your_agora_app_id
+AGORA_APP_CERTIFICATE=your_agora_app_certificate
 ```
-FRONTEND_URL=https://your-domain.vercel.app
-SUPABASE_URL=https://nhqnheaucrcuacofqukg.supabase.co
-SERVICE_ROLE=your_service_role_key
-NEXT_PUBLIC_SUPABASE_URL=https://nhqnheaucrcuacofqukg.supabase.co
+
+### 2.3 Deploy
+
+1. Railway will automatically detect your `railway.json` configuration
+2. It will build from the `backend/` directory
+3. Deploy using `npm start` command
+4. Your backend will be available at: `https://your-project-name.railway.app`
+
+## 🌐 Step 3: Deploy Frontend to Vercel
+
+### 3.1 Connect Vercel to GitHub
+
+1. Go to [Vercel.com](https://vercel.com)
+2. Sign in with GitHub
+3. Click "New Project"
+4. Import your `gather-clone` repository
+5. Select the `main` branch
+
+### 3.2 Configure Build Settings
+
+Vercel will automatically detect your `vercel.json` configuration:
+- **Framework Preset**: Next.js
+- **Root Directory**: `./` (root of repository)
+- **Build Command**: `cd frontend && npm install && npm run build`
+- **Output Directory**: `frontend/.next`
+
+### 3.3 Configure Environment Variables
+
+Add these environment variables in Vercel:
+
+```bash
+NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.railway.app
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_BASE_URL=https://your-domain.vercel.app
-NEXT_PUBLIC_BACKEND_URL=https://your-domain.vercel.app/api
-NEXT_PUBLIC_AGORA_APP_ID=40ec6557a2fa4401bf71b66fdf945d6a
-APP_CERTIFICATE=9f60cb9728f84e2eace185e99c1cb603
 ```
 
-## 🚂 Option 2: Railway Deployment
+### 3.4 Deploy
 
-### Step 1: Deploy to Railway
-1. Go to [railway.app](https://railway.app)
-2. Sign up/Login with GitHub
-3. Click "New Project" → "Deploy from GitHub repo"
-4. Select your repository
+1. Click "Deploy"
+2. Vercel will build and deploy your frontend
+3. Your frontend will be available at: `https://your-project-name.vercel.app`
 
-### Step 2: Configure Environment Variables
-In Railway dashboard, add the same environment variables as above.
+## 🔗 Step 4: Update Environment Variables
 
-## 🌐 Option 3: Render Deployment
+### 4.1 Update Backend URL in Railway
 
-### Step 1: Deploy to Render
-1. Go to [render.com](https://render.com)
-2. Sign up/Login with GitHub
-3. Click "New" → "Web Service"
-4. Connect your GitHub repository
+After getting your Vercel URL, update the `FRONTEND_URL` in Railway:
 
-### Step 2: Configure Build Settings
-- **Build Command:** `cd frontend && npm install && npm run build`
-- **Start Command:** `cd backend && npm start`
-
-## 🔧 Environment Variables Reference
-
-### Required Variables:
-```
-FRONTEND_URL=https://your-domain.com
-SUPABASE_URL=https://nhqnheaucrcuacofqukg.supabase.co
-SERVICE_ROLE=your_service_role_key
-NEXT_PUBLIC_SUPABASE_URL=https://nhqnheaucrcuacofqukg.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_BASE_URL=https://your-domain.com
-NEXT_PUBLIC_BACKEND_URL=https://your-domain.com/api
-NEXT_PUBLIC_AGORA_APP_ID=40ec6557a2fa4401bf71b66fdf945d6a
-APP_CERTIFICATE=9f60cb9728f84e2eace185e99c1cb603
+```bash
+FRONTEND_URL=https://your-frontend-domain.vercel.app
 ```
 
-## 🎉 Post-Deployment Checklist
+### 4.2 Update Frontend Backend URL in Vercel
 
-- [ ] Test Google OAuth signin
-- [ ] Test creating a new space
-- [ ] Test video chat functionality
-- [ ] Test multiplayer features
-- [ ] Verify all environment variables are set
-- [ ] Check database connections
-- [ ] Test on different devices/browsers
+After getting your Railway URL, update the `NEXT_PUBLIC_BACKEND_URL` in Vercel:
 
-## 🔍 Troubleshooting
+```bash
+NEXT_PUBLIC_BACKEND_URL=https://your-backend-domain.railway.app
+```
 
-### Common Issues:
-1. **CORS errors** - Ensure backend URL is correct
-2. **Database connection** - Verify Supabase credentials
-3. **Video chat not working** - Check Agora credentials
-4. **Authentication issues** - Verify Google OAuth setup
+## ✅ Step 5: Test Your Deployment
 
-### Debug Steps:
-1. Check browser console for errors
-2. Verify environment variables are set correctly
-3. Test database connection
-4. Check network requests in browser dev tools
+### 5.1 Test Backend Health
 
-## 📞 Support
+Visit your Railway backend URL:
+```
+https://your-backend-domain.railway.app/health
+```
 
-If you encounter issues:
-1. Check the deployment platform logs
-2. Verify all environment variables
-3. Test locally first
-4. Check browser console for errors
+You should see:
+```json
+{
+  "status": "ok",
+  "message": "Gather Clone Backend is running"
+}
+```
+
+### 5.2 Test Frontend
+
+Visit your Vercel frontend URL and test:
+- User authentication
+- Creating spaces
+- Virtual environment rendering
+- Multiplayer functionality
+
+## 🔄 Step 6: Continuous Deployment
+
+Both Railway and Vercel will automatically redeploy when you push changes to your `main` branch.
+
+### 6.1 Update Your Code
+
+```bash
+# Make changes to your code
+git add .
+git commit -m "Update feature"
+git push origin main
+```
+
+### 6.2 Monitor Deployments
+
+- **Railway**: Check the "Deployments" tab in your project
+- **Vercel**: Check the "Deployments" tab in your project
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **Build Failures**
+   - Check build logs in Railway/Vercel
+   - Verify all dependencies are in `package.json`
+   - Ensure TypeScript compilation succeeds
+
+2. **Environment Variables**
+   - Verify all required variables are set
+   - Check variable names match exactly
+   - Ensure no extra spaces or quotes
+
+3. **CORS Issues**
+   - Verify `FRONTEND_URL` is set correctly in Railway
+   - Check that the URL matches your Vercel domain exactly
+
+4. **Database Connection**
+   - Verify Supabase credentials are correct
+   - Check if your Supabase project is active
+   - Ensure database tables exist
+
+### Getting Help
+
+- **Railway**: Check [Railway Docs](https://docs.railway.app)
+- **Vercel**: Check [Vercel Docs](https://vercel.com/docs)
+- **GitHub Issues**: Create an issue in your repository
+
+## 🎉 Success!
+
+Once deployed, your Gather Clone will be available at:
+- **Frontend**: `https://your-project-name.vercel.app`
+- **Backend**: `https://your-project-name.railway.app`
+
+Your application will automatically update whenever you push changes to GitHub!
