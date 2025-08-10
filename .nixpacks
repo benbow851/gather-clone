@@ -1,0 +1,19 @@
+[phases.setup]
+nixPkgs = ["nodejs_18", "yarn"]
+
+[phases.install]
+cmds = ["cd backend && npm install"]
+
+[phases.build]
+cmds = ["cd backend && npm run build"]
+
+[start]
+cmd = "cd backend && npm start"
+
+[variables]
+NIXPACKS_NODE_VERSION = "18"
+NIXPACKS_START_CMD = "cd backend && npm start"
+NIXPACKS_BUILD_CMD = "cd backend && npm install && npm run build"
+RAILWAY_START_COMMAND = "cd backend && npm start"
+START_COMMAND = "cd backend && npm start"
+BUILD_COMMAND = "cd backend && npm install && npm run build"
