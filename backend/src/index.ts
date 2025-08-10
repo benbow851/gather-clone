@@ -24,7 +24,8 @@ const io = new SocketIOServer(server, {
   }
 })
 
-app.use(routes())
+// Mount routes under /api prefix
+app.use('/api', routes())
 
 sockets(io)
 
