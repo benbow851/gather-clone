@@ -1,0 +1,31 @@
+# Backend files
+backend/
+*.sql
+
+# Development files
+.env*
+.env.local
+.env.example
+
+# Build artifacts
+dist/
+build/
+*.log
+
+# Dependencies
+node_modules/
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+DEPLOYMENT.md
+setup-github.md
+database-setup*.sql
+
+# Railway config
+railway.json
+.railwayignore
+.nixpacks
