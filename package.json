@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "A Gather.town clone with multiplayer video chat",
   "scripts": {
-    "start": "cd backend && npm start",
-    "start:backend": "cd backend && npm start",
-    "install:backend": "cd backend && npm install"
+    "start": "npm start",
+    "start:backend": "npm start",
+    "install:backend": "npm install"
   },
   "keywords": ["gather", "video-chat", "multiplayer", "virtual-spaces"],
   "author": "Your Name",
