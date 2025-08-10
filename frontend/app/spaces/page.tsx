@@ -67,34 +67,56 @@ export default function SpacesPage() {
 
   const createSpace = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user || !newSpace.name.trim()) return
+    console.log('🚀 Frontend: Create Space button clicked')
+    console.log('📝 Form data:', newSpace)
+    console.log('👤 User:', user)
+    
+    if (!user || !newSpace.name.trim()) {
+      console.log('❌ Frontend: Missing user or space name')
+      return
+    }
 
     setCreating(true)
+    console.log('🔄 Frontend: Sending request to backend...')
+    
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/spaces`, {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+      console.log('🌐 Backend URL:', backendUrl)
+      
+      const requestBody = {
+        name: newSpace.name,
+        description: newSpace.description,
+        is_public: newSpace.is_public,
+        created_by: user.id,
+      }
+      console.log('📤 Request body:', requestBody)
+      
+      const response = await fetch(`${backendUrl}/api/spaces`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: newSpace.name,
-          description: newSpace.description,
-          is_public: newSpace.is_public,
-          created_by: user.id,
-        }),
+        body: JSON.stringify(requestBody),
       })
+
+      console.log('📥 Response status:', response.status)
+      console.log('📥 Response ok:', response.ok)
 
       if (response.ok) {
         const createdSpace = await response.json()
+        console.log('✅ Frontend: Space created successfully:', createdSpace)
         setSpaces([createdSpace, ...spaces])
         setNewSpace({ name: '', description: '', is_public: true })
         setShowCreateForm(false)
         
         // Redirect to the new space
         router.push(`/space/${createdSpace.id}`)
+      } else {
+        const errorText = await response.text()
+        console.error('❌ Frontend: Backend error:', response.status, errorText)
       }
     } catch (error) {
-      console.error('Failed to create space:', error)
+      console.error('❌ Frontend: Network error:', error)
     }
     setCreating(false)
   }

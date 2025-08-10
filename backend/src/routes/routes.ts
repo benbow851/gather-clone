@@ -17,6 +17,7 @@ export default function routes() {
 
   // Spaces API
   router.get('/spaces', async (req, res) => {
+    console.log('🔍 GET /spaces - Fetching spaces')
     try {
       // For now, return mock data. Later you can integrate with Supabase
       const mockSpaces = [
@@ -39,16 +40,20 @@ export default function routes() {
           participant_count: 0
         }
       ]
+      console.log('✅ GET /spaces - Returning', mockSpaces.length, 'spaces')
       return res.json(mockSpaces)
     } catch (e) {
+      console.error('❌ GET /spaces - Error:', e)
       return res.status(500).json({ error: 'failed_to_fetch_spaces' })
     }
   })
 
   router.post('/spaces', async (req, res) => {
+    console.log('🚀 POST /spaces - Creating new space:', req.body)
     try {
       const { name, description, is_public, created_by } = req.body
       if (!name || !created_by) {
+        console.log('❌ POST /spaces - Missing required fields:', { name, created_by })
         return res.status(400).json({ error: 'name and created_by are required' })
       }
 
@@ -63,15 +68,18 @@ export default function routes() {
         participant_count: 0
       }
 
+      console.log('✅ POST /spaces - Created space:', newSpace)
       // Here you would typically save to Supabase
       // For now, just return the created space
       return res.status(201).json(newSpace)
     } catch (e) {
+      console.error('❌ POST /spaces - Error:', e)
       return res.status(500).json({ error: 'failed_to_create_space' })
     }
   })
 
   router.get('/spaces/:id', async (req, res) => {
+    console.log('🔍 GET /spaces/:id - Fetching space:', req.params.id)
     try {
       const { id } = req.params
       
@@ -85,8 +93,10 @@ export default function routes() {
         is_public: true
       }
 
+      console.log('✅ GET /spaces/:id - Returning space:', mockSpace)
       return res.json(mockSpace)
     } catch (e) {
+      console.error('❌ GET /spaces/:id - Error:', e)
       return res.status(500).json({ error: 'failed_to_fetch_space' })
     }
   })
