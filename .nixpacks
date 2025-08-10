@@ -12,3 +12,4 @@ cmd = "npm start"
 
 [variables]
 NIXPACKS_NODE_VERSION = "18"
+NIXPACKS_START_CMD = "npm start"
