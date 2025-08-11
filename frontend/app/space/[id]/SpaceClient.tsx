@@ -21,6 +21,10 @@ export default function SpaceClient({ spaceId, user, space }: SpaceClientProps) 
 
     const initializePixiApp = async () => {
       try {
+        console.log('🚀 Starting Pixi initialization...')
+        console.log('👤 User:', user)
+        console.log('🏠 Space ID:', spaceId)
+        
         // Create default realm data for the space
         const defaultRealmData = {
           spawnpoint: {
@@ -33,6 +37,8 @@ export default function SpaceClient({ spaceId, user, space }: SpaceClientProps) 
             tilemap: createDefaultTilemap()
           }]
         }
+        
+        console.log('🗺️ Default realm data:', defaultRealmData)
 
         // Initialize PlayApp with the default data
         const playApp = new PlayApp(
@@ -44,18 +50,28 @@ export default function SpaceClient({ spaceId, user, space }: SpaceClientProps) 
         )
 
         playAppRef.current = playApp
+        console.log('🎮 PlayApp created, initializing...')
         
         // Initialize the Pixi app
         await playApp.init()
+        console.log('✅ PlayApp initialized successfully')
         
         // Add the Pixi view to the container
         if (containerRef.current && playApp.getApp().view) {
+          console.log('🎨 Adding Pixi view to container')
           containerRef.current.appendChild(playApp.getApp().view)
+          console.log('✅ Pixi view added to container')
+        } else {
+          console.error('❌ Container or Pixi view not found')
+          console.log('Container ref:', containerRef.current)
+          console.log('Pixi view:', playApp.getApp().view)
         }
 
         setIsLoading(false)
+        console.log('🎯 Loading complete!')
       } catch (error) {
-        console.error('Failed to initialize Pixi app:', error)
+        console.error('❌ Failed to initialize Pixi app:', error)
+        console.error('Error details:', error)
         setIsLoading(false)
       }
     }
@@ -148,6 +164,7 @@ export default function SpaceClient({ spaceId, user, space }: SpaceClientProps) 
   return (
     <div className="w-full h-full">
       <div 
+        id="app-container"
         ref={containerRef} 
         className="w-full h-full flex items-center justify-center"
         style={{ minHeight: '600px' }}
